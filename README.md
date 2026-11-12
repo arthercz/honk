@@ -1,10 +1,10 @@
 <div align="center">
 
-# honk
+# openwrt-honk
 
-**An experimental transparent-proxy engine for Linux, written in Rust.**
+**An unofficial honk maintenance branch for OpenWrt and ImmortalWrt — a goose that knows where your packets should go.**
 
-**[Documentation](doc/README.md)** / **[Web UI demo](https://demo.daeuniverse.org/)** / **[Releases](https://github.com/arthercz/honk/releases)**
+**[Documentation](doc/README.md)** / **[Web UI demo](https://demo.daeuniverse.org/)** / **[Releases](https://github.com/arthercz/openwrt-honk/releases)**
 
 English / [简体中文](README.zh.md)
 
@@ -18,7 +18,7 @@ honk follows the design of dae's eBPF datapath and configuration syntax, and of 
 
 ## Personal maintenance branch
 
-This repository is maintained at [arthercz/honk](https://github.com/arthercz/honk). The `personal-main` branch is based on [6106757-lab/honk](https://github.com/6106757-lab/honk) and tracks [daeuniverse/honk](https://github.com/daeuniverse/honk) for upstream changes.
+This repository is maintained at [arthercz/openwrt-honk](https://github.com/arthercz/openwrt-honk). The `personal-main` branch is based on [6106757-lab/honk](https://github.com/6106757-lab/honk) and tracks [daeuniverse/honk](https://github.com/daeuniverse/honk) for upstream changes.
 
 Current maintenance changes:
 
@@ -98,7 +98,7 @@ For routine maintenance, fetch and review upstream changes, resolve conflicts de
 
 ## Report problems
 
-Report proxy, routing, and DNS problems in [this fork's Issues](https://github.com/arthercz/honk/issues); report embedded UI problems in [doona fork Issues](https://github.com/6106757-lab/doona/issues).
+Report proxy, routing, and DNS problems in [this fork's Issues](https://github.com/arthercz/openwrt-honk/issues); report embedded UI problems in [doona fork Issues](https://github.com/6106757-lab/doona/issues).
 
 For vulnerabilities, follow [SECURITY.md](.github/SECURITY.md).
 
