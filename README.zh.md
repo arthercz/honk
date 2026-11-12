@@ -4,7 +4,7 @@
 
 **用 Rust 编写的实验性 Linux 透明代理引擎。**
 
-**[文档](doc/README.md)** / **[网页界面示范](https://demo.daeuniverse.org/)** / **[下载](https://github.com/6106757-lab/honk/releases)**
+**[文档](doc/README.md)** / **[网页界面示范](https://demo.daeuniverse.org/)** / **[下载](https://github.com/arthercz/honk/releases)**
 
 [English](README.md) / 简体中文
 
@@ -15,6 +15,17 @@
 > **早期 alpha，不建议用于生产。** 可能发生破坏性变更，部分功能尚未完成，真实环境验证仍然有限。
 
 honk 的 eBPF 数据面和配置语法参考 dae 的设计，出站组与 Clash API 参考 sing-box 的设计。它是独立实现，并非任一项目的移植。
+
+## 个人维护分支
+
+本仓库在 [arthercz/honk](https://github.com/arthercz/honk) 维护。`personal-main` 分支基于 [6106757-lab/honk](https://github.com/6106757-lab/honk)，并跟踪 [daeuniverse/honk](https://github.com/daeuniverse/honk) 的上游变更。
+
+当前维护内容：
+
+- REALITY 认证使用客户端版本 `1.8.1`，替代旧的 `1.3.3` 占位值。强制 `minClientVer` 为 `1.8.0` 的服务器因此可以正常认证客户端，不再回退到伪装站点证书。密钥交换、short ID、SNI 和证书认证逻辑保持不变。
+- 本次修改包含由独立实现计算的 wire 向量回归测试。16 项 REALITY 单元与回环测试全部通过，真实 VLESS REALITY 节点已通过 HTTP 健康检查，实测延迟为 155 ms。
+
+使用 `just build-musl-embedded-ui` 构建内嵌 eBPF 和 doona 的 x86_64 静态 musl 完整版本。使用 `cargo test -p honk-outbound --lib reality::` 运行 REALITY 定向测试。工具链要求见[从源码构建](doc/zh/how-to-start.md#从源码构建)。
 
 ## 功能概览
 
@@ -34,14 +45,13 @@ honk 的 eBPF 数据面和配置语法参考 dae 的设计，出站组与 Clash 
 - **链式代理（detour）**：节点可写 `dialer-proxy`（Clash 订阅 / 分享链接）或 `detour`（sing-box JSON）；组可写 `detour:`，前置可为节点、组或 `direct`。
 - **引用组继承**：`filter: group(X)` 的组自动继承上游组的 detour，显式 `detour:`（含 `direct`）可覆盖；TCP、UDP 拨号与 Clash / 原生 API 延迟测试共用同一解析。
 - **前置热切换**：切换前置节点或前置组成员后热重载即生效，无需重启；MASQUE 隧道按承载路径分别建立，空闲隧道在重载时回收。
-- **内置定制版 doona 界面**：`full` 构建内置 [6106757-lab/doona](https://github.com/6106757-lab/doona) `v0.1.0-rc.4` 编译的界面，支持 MASQUE 延迟测试。
-- **现成二进制**：[Releases](https://github.com/6106757-lab/honk/releases) 提供已编译的 x86_64 musl `full` 构建，下载即可部署，不需要本地 Rust 编译环境。
+- **内置定制版 doona 界面**：`full` 构建内置 [6106757-lab/doona](https://github.com/6106757-lab/doona) `v0.1.0-rc.7` 编译的界面，支持 MASQUE 延迟测试。
 
-上游 `main` 目前不含上述功能；本仓库独立维护，问题请提交到[本仓库 Issues](https://github.com/6106757-lab/honk/issues)。
+上游 `main` 目前不含上述功能；本仓库独立维护，问题请提交到[本仓库 Issues](https://github.com/arthercz/honk/issues)。
 
 ## 安装
 
-从 [本仓库 Releases](https://github.com/6106757-lab/honk/releases) 下载已编译好的归档。当前发布物为 x86_64 Linux 静态 musl 的 `full` 构建（原生 API + Clash API + 内置 doona / doona lite），下载后可直接部署，不需要本地 Rust 编译环境。下表描述上游的构建矩阵，本仓库 Release 目前只发布 `full`。
+本个人仓库目前尚未发布预编译版本，请从 `personal-main` 源码构建。可选构建形态如下：
 
 | 构建 | 原生 API | Clash API | 内嵌 doona 与 doona lite |
 | --- | --- | --- | --- |
@@ -49,7 +59,7 @@ honk 的 eBPF 数据面和配置语法参考 dae 的设计，出站组与 Clash 
 | `native-api` | 是 | 否 | 否 |
 | `clash-api` | 否 | 是 | 否 |
 
-各构建均提供静态链接的 musl 版本，`full` 另提供链接 glibc 的 `gnu` 版本。名称含 `stock` 的归档使用系统分配器而非 jemalloc。每个版本的 Downloads 一节列出校验和及构建来源证明。
+发布工作流支持静态链接的 musl 版本，以及链接 glibc 的 `full`（`gnu`）版本。名称含 `stock` 的归档使用系统分配器而非 jemalloc。正式发布时应附带 SHA-256 校验和及构建来源证明。
 
 OpenWrt 用户可使用 [daeuniverse 软件源](https://openwrt.daeuniverse.org/zh-cn/)。
 
@@ -61,7 +71,7 @@ OpenWrt 用户可使用 [daeuniverse 软件源](https://openwrt.daeuniverse.org/
 
 honk 可配合以下两类网页界面使用：
 
-- [doona](https://github.com/Zakkaus/doona)：基于原生 API，提供运行观测、诊断与配置编辑功能。doona lite 为其轻量预览版。在线演示见[标准版](https://demo.daeuniverse.org/)与 [lite 版](https://demo.daeuniverse.org/lite/)。本仓库 `full` 构建内置的是 [6106757-lab/doona](https://github.com/6106757-lab/doona) `v0.1.0-rc.4` 编译的界面，支持对 MASQUE 节点做延迟测试。
+- [doona](https://github.com/Zakkaus/doona)：基于原生 API，提供运行观测、诊断与配置编辑功能。doona lite 为其轻量预览版。在线演示见[标准版](https://demo.daeuniverse.org/)与 [lite 版](https://demo.daeuniverse.org/lite/)。本仓库 `full` 构建内置的是 [6106757-lab/doona](https://github.com/6106757-lab/doona) `v0.1.0-rc.7` 编译的界面，支持对 MASQUE 节点做延迟测试。
 - Clash 面板：基于 Clash 兼容 API，例如 [zashboard](https://github.com/Zephyruso/zashboard)。
 
 ![doona 活动页的流量图表与状态卡片](https://doona.daeuniverse.org/screenshots/zh-CN/activity-light.webp)
@@ -87,11 +97,11 @@ honk 可配合以下两类网页界面使用：
 
 无 root 的用户态开发可使用 [mock 模式](doc/zh/how-to-start.md#无-root-开发)。`--mock-ebpf` 不会拦截流量，不能代替数据面测试。
 
-本仓库的二进制由 GitHub Actions 构建，产物直接发布到 [Releases](https://github.com/6106757-lab/honk/releases)，无需本地编译环境；构建工作流见 [build.yml](.github/workflows/build.yml)，发布校验和随每个 Release 提供。
+日常维护时先获取并审查上游变更，明确处理冲突，运行受影响的测试，再推送 `personal-main`。仓库包含 GitHub Actions 构建与发布工作流；仅推送 `personal-main` 不会自动发布版本。详见 [release.yml](.github/workflows/release.yml)。
 
 ## 报告问题
 
-代理、路由和 DNS 问题请提交至 [本仓库 Issues](https://github.com/6106757-lab/honk/issues)；内置界面问题请提交至 [doona fork Issues](https://github.com/6106757-lab/doona/issues)。上游专属功能的问题仍应提到 daeuniverse/honk。
+代理、路由和 DNS 问题请提交至 [本仓库 Issues](https://github.com/arthercz/honk/issues)；内置界面问题请提交至 [doona fork Issues](https://github.com/6106757-lab/doona/issues)。上游专属功能的问题仍应提到 daeuniverse/honk。
 
 安全漏洞请按 [SECURITY.md](.github/SECURITY.md) 报告。
 

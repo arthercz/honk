@@ -4,7 +4,7 @@
 
 **An experimental transparent-proxy engine for Linux, written in Rust.**
 
-**[Documentation](doc/README.md)** / **[Web UI demo](https://demo.daeuniverse.org/)** / **[Releases](https://github.com/6106757-lab/honk/releases)**
+**[Documentation](doc/README.md)** / **[Web UI demo](https://demo.daeuniverse.org/)** / **[Releases](https://github.com/arthercz/honk/releases)**
 
 English / [简体中文](README.zh.md)
 
@@ -15,6 +15,17 @@ English / [简体中文](README.zh.md)
 > **Early alpha, not recommended for production.** Expect breaking changes, incomplete features, and limited real-world validation.
 
 honk follows the design of dae's eBPF datapath and configuration syntax, and of sing-box's outbound groups and Clash API. It is an independent implementation, not a port of either project.
+
+## Personal maintenance branch
+
+This repository is maintained at [arthercz/honk](https://github.com/arthercz/honk). The `personal-main` branch is based on [6106757-lab/honk](https://github.com/6106757-lab/honk) and tracks [daeuniverse/honk](https://github.com/daeuniverse/honk) for upstream changes.
+
+Current maintenance changes:
+
+- REALITY authentication advertises client version 1.8.1 instead of the legacy 1.3.3 placeholder. Servers enforcing `minClientVer` 1.8.0 can therefore authenticate the client instead of returning the mask certificate. Key exchange, short IDs, SNI, and certificate authentication remain unchanged.
+- The change has an independently calculated wire-vector regression test. All 16 REALITY unit and loopback tests pass, and a real VLESS REALITY node completed an HTTP health check with a 155 ms delay measurement.
+
+Build the full x86_64 static musl binary with embedded eBPF and doona using `just build-musl-embedded-ui`. Run the focused REALITY tests with `cargo test -p honk-outbound --lib reality::`. See [Build from source](doc/en/how-to-start.md#build-from-source) for toolchain requirements.
 
 ## Capabilities
 
@@ -33,12 +44,11 @@ This fork adds features that upstream `daeuniverse/honk` does not ship. See the 
 - MASQUE (connect-ip) outbound, including WARP-style endpoints imported from subscriptions, with TUN devices and UI latency probes.
 - Node-level and group-level chained proxies (`dialer-proxy` / `detour`), on both TCP and UDP, with front switching that takes effect on reload.
 - `filter: group(X)` groups inherit X's `detour:`; an explicit `detour:`, including `direct`, overrides it.
-- An embedded doona UI built from [6106757-lab/doona](https://github.com/6106757-lab/doona) `v0.1.0-rc.4`, which can probe MASQUE nodes.
-- Prebuilt x86_64 musl `full` binaries on [Releases](https://github.com/6106757-lab/honk/releases); no local Rust toolchain is needed.
+- An embedded doona UI built from [6106757-lab/doona](https://github.com/6106757-lab/doona) `v0.1.0-rc.7`, which can probe MASQUE nodes.
 
 ## Install
 
-Download a prebuilt archive from [this fork's Releases](https://github.com/6106757-lab/honk/releases). The published artifact is the x86_64 static musl `full` build; it can be deployed as-is without a local Rust toolchain. The table below describes the upstream build matrix; only `full` is published here.
+No prebuilt release is currently published from this personal repository. Build `personal-main` from source. The available build shapes are:
 
 | Build | Native API | Clash API | Embedded doona and doona lite |
 | --- | --- | --- | --- |
@@ -46,7 +56,7 @@ Download a prebuilt archive from [this fork's Releases](https://github.com/61067
 | `native-api` | Yes | No | No |
 | `clash-api` | No | Yes | No |
 
-Every build comes as a static musl binary; `full` also comes linked against glibc (`gnu`). Archives with `stock` in the name use the system allocator instead of jemalloc. Each release's Downloads section lists checksums and provenance.
+The release workflow supports static musl binaries and a glibc (`gnu`) `full` build. Archives with `stock` in the name use the system allocator instead of jemalloc. Published releases should include SHA-256 checksums and provenance.
 
 For OpenWrt, use the [daeuniverse package feed](https://openwrt.daeuniverse.org/en/).
 
@@ -84,11 +94,11 @@ The workspace contains configuration, shared eBPF types, NFQUEUE, outbound, core
 
 Use [mock mode](doc/en/how-to-start.md#unprivileged-development) for unprivileged userspace development. `--mock-ebpf` does not intercept traffic or test the datapath.
 
-Binaries are built by GitHub Actions and published straight to [Releases](https://github.com/6106757-lab/honk/releases); see [build.yml](.github/workflows/build.yml). Every release lists SHA-256 checksums.
+For routine maintenance, fetch and review upstream changes, resolve conflicts deliberately, run the affected tests, and then push `personal-main`. The included GitHub Actions workflows support build and release verification; pushing `personal-main` does not by itself publish a release. See [release.yml](.github/workflows/release.yml).
 
 ## Report problems
 
-Report proxy, routing, and DNS problems in [this fork's Issues](https://github.com/6106757-lab/honk/issues); report embedded UI problems in [doona fork Issues](https://github.com/6106757-lab/doona/issues).
+Report proxy, routing, and DNS problems in [this fork's Issues](https://github.com/arthercz/honk/issues); report embedded UI problems in [doona fork Issues](https://github.com/6106757-lab/doona/issues).
 
 For vulnerabilities, follow [SECURITY.md](.github/SECURITY.md).
 
