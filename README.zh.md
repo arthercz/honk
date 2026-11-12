@@ -1,10 +1,10 @@
 <div align="center">
 
-# openwrt-honk
+# openwrt-openhonk
 
 **面向 OpenWrt / ImmortalWrt 的非官方 honk 维护分支——一只知道流量该往哪走的鹅。**
 
-**[文档](doc/README.md)** / **[网页界面示范](https://demo.daeuniverse.org/)** / **[下载](https://github.com/arthercz/openwrt-honk/releases)**
+**[文档](doc/README.md)** / **[网页界面示范](https://demo.daeuniverse.org/)** / **[下载](https://github.com/arthercz/openwrt-openhonk/releases)**
 
 [English](README.md) / 简体中文
 
@@ -18,7 +18,7 @@ honk 的 eBPF 数据面和配置语法参考 dae 的设计，出站组与 Clash 
 
 ## 个人维护分支
 
-本仓库在 [arthercz/openwrt-honk](https://github.com/arthercz/openwrt-honk) 维护。`personal-main` 分支基于 [6106757-lab/honk](https://github.com/6106757-lab/honk)，并跟踪 [daeuniverse/honk](https://github.com/daeuniverse/honk) 的上游变更。
+本仓库在 [arthercz/openwrt-openhonk](https://github.com/arthercz/openwrt-openhonk) 维护。`personal-main` 分支基于 [6106757-lab/honk](https://github.com/6106757-lab/honk)，并跟踪 [daeuniverse/honk](https://github.com/daeuniverse/honk) 的上游变更。
 
 当前维护内容：
 
@@ -47,7 +47,7 @@ honk 的 eBPF 数据面和配置语法参考 dae 的设计，出站组与 Clash 
 - **前置热切换**：切换前置节点或前置组成员后热重载即生效，无需重启；MASQUE 隧道按承载路径分别建立，空闲隧道在重载时回收。
 - **内置定制版 doona 界面**：`full` 构建内置 [6106757-lab/doona](https://github.com/6106757-lab/doona) `v0.1.0-rc.7` 编译的界面，支持 MASQUE 延迟测试。
 
-上游 `main` 目前不含上述功能；本仓库独立维护，问题请提交到[本仓库 Issues](https://github.com/arthercz/openwrt-honk/issues)。
+上游 `main` 目前不含上述功能；本仓库独立维护，问题请提交到[本仓库 Issues](https://github.com/arthercz/openwrt-openhonk/issues)。
 
 ## 安装
 
@@ -101,7 +101,7 @@ honk 可配合以下两类网页界面使用：
 
 ## 报告问题
 
-代理、路由和 DNS 问题请提交至 [本仓库 Issues](https://github.com/arthercz/openwrt-honk/issues)；内置界面问题请提交至 [doona fork Issues](https://github.com/6106757-lab/doona/issues)。上游专属功能的问题仍应提到 daeuniverse/honk。
+代理、路由和 DNS 问题请提交至 [本仓库 Issues](https://github.com/arthercz/openwrt-openhonk/issues)；内置界面问题请提交至 [doona fork Issues](https://github.com/6106757-lab/doona/issues)。上游专属功能的问题仍应提到 daeuniverse/honk。
 
 安全漏洞请按 [SECURITY.md](.github/SECURITY.md) 报告。
 
