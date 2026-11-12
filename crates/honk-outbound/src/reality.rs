@@ -195,7 +195,8 @@ fn reality_session_id(
     hkdf.expand(HKDF_INFO, &mut auth_key).ok()?;
 
     let mut plain = [0u8; 16];
-    plain[..3].copy_from_slice(&[1, 3, 3]); // client version, reality.go
+    // Peers enforcing minClientVer reject the legacy 1.3.3 placeholder.
+    plain[..3].copy_from_slice(&[1, 8, 1]);
     plain[4..8].copy_from_slice(&timestamp.to_be_bytes());
     plain[8..].copy_from_slice(short_id);
 
@@ -422,8 +423,15 @@ mod tests {
         );
         assert_eq!(
             session_id.as_slice(),
-            unhex("7cfcdadbd3a5640bceef2afc7951caf671f7a737b2ba3f30eadb2d32148c542d").as_slice()
+            unhex("7cf7d8dbd3a5640bceef2afc7951caf6da818d1e0117c44929ae62aafcc2e3bc").as_slice()
         );
+        let mut plaintext = session_id[..16].to_vec();
+        let mut tag = session_id[16..].to_vec();
+        boring::aead::AeadCtx::new_default_tag(&boring::aead::Algorithm::aes_256_gcm(), &auth_key)
+            .unwrap()
+            .open_in_place(&msg[26..38], &mut plaintext, &mut tag, &msg)
+            .unwrap();
+        assert_eq!(&plaintext[..3], &[1, 8, 1]);
     }
 
     /// AAD covers the zeroed session_id slot: mutating any covered byte
